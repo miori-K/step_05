@@ -55,7 +55,7 @@ define(["../../node_modules/@polymer/polymer/polymer-legacy.js","../../node_modu
       <div>
         <h4>Output</h4>
         <paper-radio-group id="solvers" selected="output">
-          <paper-radio-button name="output">Your output</paper-radio-button>
+          <paper-radio-button name="sample/2_opt">sample/2_opt</paper-radio-button>
           <paper-radio-button name="sample/random">sample/random</paper-radio-button>
           <paper-radio-button name="sample/greedy">sample/greedy</paper-radio-button>
           <paper-radio-button name="sample/sa">sample/sa</paper-radio-button>
