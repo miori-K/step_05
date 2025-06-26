@@ -9,8 +9,10 @@ from common import print_tour, read_input
 def distance(city1, city2): #　2つの都市間の距離を計算する関数
     return math.sqrt((city1[0] - city2[0]) ** 2 + (city1[1] - city2[1]) ** 2)
 
+def search_dist(city1,city2,dist):
+    return dist[city1][city2]
 
-def solve(cities): 
+def greedy(cities): 
     N = len(cities) #　N=都市の数
 
     dist = [[0] * N for i in range(N)] #　全ての都市間の初期値をゼロに設定
@@ -30,10 +32,33 @@ def solve(cities):
         tour.append(next_city)
         current_city = next_city
     tour.append(tour[0])
-    return tour
 
+    return tour,dist
+
+def opt_2(tour,dist):
+    pair_list = [] 
+
+    for i in range(len(tour) - 1): # 2つずつ取り出したリストを作る
+        pair_list.append([tour[i], tour[i + 1]])
+        
+    for i in range(len(pair_list) - 2): # クロスしているところがあれば変える
+        for j in range(i+2,len(pair_list)):
+              if (search_dist(pair_list[i][0],pair_list[i][1],dist)+search_dist(pair_list[j][0],pair_list[j][1],dist))>(search_dist(pair_list[i][0],pair_list[j][0],dist)+search_dist(pair_list[i][1],pair_list[j][1],dist)):
+                x = pair_list[i][1]
+                pair_list[i][1] = pair_list[i+1][0] = pair_list[j][0]
+                pair_list[i+1][1] = pair_list[j][0] = x
+    
+    answer = []
+    for k in range(len(pair_list)):
+        answer.append(pair_list[k][0])
+    answer.append(0)
+
+    return answer
+
+def solve(cities):
+    tour,dist = greedy(cities)
+    return opt_2(tour,dist)
 
 if __name__ == '__main__':
     assert len(sys.argv) > 1
-    tour = solve(read_input(sys.argv[1]))
-    print_tour(tour)
+    print_tour(solve(read_input(sys.argv[1])))
