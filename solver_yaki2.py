@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import random
 import sys
 import math
 
@@ -9,6 +10,7 @@ def distance(city1, city2): #　2つの都市間の距離を計算する関数
     return math.sqrt((city1[0] - city2[0]) ** 2 + (city1[1] - city2[1]) ** 2)
 
 # 貪欲法
+
 def greedy(cities): 
     N = len(cities) #　N=都市の数
 
@@ -53,20 +55,58 @@ def opt_2(tour,dist):
         count += 1
 
     tour.append(0)
-    answer = calc(tour,dist)
-    #print(answer)
     return tour
 
-# 全距離を求める
-def calc(tour,dist):
+# 焼きなまし法
+def yaki(tour,dist):
+    count = 0
+    while count < 100000: #100000回繰り返す
+        d = calc(tour,dist)
+
+        # ランダムに2点を選ぶ
+        i = random.randrange(1,len(tour)-1)
+        j = random.randrange(1,len(tour)-1)
+
+        # 選んだ点が同じだったらやり直し
+        if i == j:
+            continue
+
+        # 選んだ点を交換する
+        else: 
+            x = tour[i]
+            tour[i] = tour[j]
+            tour[j] = x
+        new = calc(tour,dist)
+
+        # 新しいルートが古いルートよりよかったら新しいルートにする
+        if new < d:
+            d = new
+
+        # 新しいルートが古いルートより悪かったら、20%の確率で新しいルートにし、80%の確率でそのまま
+        else:
+            y = random.randrange(1,11)
+            if y > 2:
+                continue
+            else:
+                d = new
+
+        count += 1
+    print(d)
+    
+    return tour
+    
+
+def calc(tour,dist): # tourを受け取り、全距離を求める
     all_distance = 0
     for i in range(len(tour)-1):
         all_distance += dist[tour[i]][tour[i+1]]
     return all_distance
 
 def solve(cities):
-    tour,dist = greedy(cities)
-    return opt_2(tour,dist)
+    t,dist = greedy(cities)
+    tour =  opt_2(t,dist)
+    return yaki(tour,dist)
+
 
 if __name__ == '__main__':
     assert len(sys.argv) > 1
