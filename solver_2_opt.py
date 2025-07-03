@@ -31,7 +31,6 @@ def greedy(cities):
         unvisited_cities.remove(next_city)
         tour.append(next_city)
         current_city = next_city
-    tour.append(tour[0])
 
     return tour,dist
 

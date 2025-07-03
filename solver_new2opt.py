@@ -44,7 +44,7 @@ def opt_2(tour,dist):
         for i in range(1,N-2): 
             for j in range(i,N-1):
                 before = dist[tour[i]][tour[i+1]] + dist[tour[j]][tour[j+1]]
-                after = dist[tour[i]][tour[j]] + dist[tour[i+1]][tour[j+1]]
+                after = dist[tour[i]][tour[j+1]] + dist[tour[i+1]][tour[j]]
 
                 if before > after:
                     x = tour[i+1]
