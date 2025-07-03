@@ -48,12 +48,20 @@ def opt_2(tour,dist):
                 pair_list[i][1] = pair_list[i+1][0] = pair_list[j][0]
                 pair_list[i+1][1] = pair_list[j][0] = x
     
+    all = calc(pair_list,dist)
     answer = []
     for k in range(len(pair_list)):
         answer.append(pair_list[k][0])
     answer.append(0)
 
+    print(all)
     return answer
+
+def calc(pair_list,dist): # ペアリストを受け取り、全部の距離を求める
+    all_distance = 0
+    for i in range(len(pair_list)):
+        all_distance += search_dist(pair_list[i][0],pair_list[i][1],dist)
+    return all_distance
 
 def solve(cities):
     tour,dist = greedy(cities)

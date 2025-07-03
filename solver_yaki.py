@@ -36,24 +36,44 @@ def greedy(cities):
 
     return tour,dist
 
+def temp(t,head_tour,all_dis,tour): # 評価関数
+    point = 0
+    all = str(int(all_dis))
+    for i in tour:
+        if tour[i] == head_tour:
+            point += 1
+    temp = t-point/(int(100*all[0])+int(10*all[1])+int(all[2]))
+    return temp
+
 def yaki(tour,dist):
+    initial_tour = tour
     pair_list = make_pair(tour)
-    #T = calc(pair_list,dist)
+    t = 100
+    prev_temp = 100
         
-    t_list = {}
-    for k in range(100):
-        temp = calc(pair_list,dist)
+    dis_list = {}
+    for k in range(10000):
         i = random.randrange(1,len(tour)-2)
         j = random.randrange(1,len(tour)-2)
         x = tour[i]
         tour[i] = tour[j]
         tour[j] = x
         pair_list = make_pair(tour)
-        t_list[k] = {'tour': tour, 'T': calc(pair_list,dist)}
-        print(t_list)
+        all_dis = calc(pair_list,dist)
+        tem = temp(t,initial_tour,all_dis,tour)
+        if tem < t:
+            dis_list[k] = {'tour': tour, 'dist': all_dis}
+        else:
+            x = int(random.randrange(-1,4))
+            if x > 0 :
+                i = random.randrange(1,len(tour)-2)
+                j = random.randrange(1,len(tour)-2)
+            else:
+                dis_list[k] = {'tour': tour, 'dist': all_dis}
+
     
-    best = min(t_list, key=lambda k: t_list[k]['T'])
-    best_tour = t_list[best]['tour']
+    best = min(dis_list, key=lambda k: dis_list[k]['dist'])
+    best_tour = dis_list[best]['tour']
     best_pair_list = make_pair(best_tour)
 
     answer = []
@@ -61,7 +81,8 @@ def yaki(tour,dist):
         answer.append(best_pair_list[k][0])
     answer.append(answer[0])  
 
-    return answer
+    return answer,dis_list[best]['dist']
+
 
 def calc(pair_list,dist): # ペアリストを受け取り、全部の距離を求める
     all_distance = 0
