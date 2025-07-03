@@ -32,21 +32,28 @@ def greedy(cities):
 
     return tour,dist
 
+# 2opt法
 def opt_2(tour,dist):
     N = len(tour)  
+    
+    prev = 0
+    all = 1
 
-    for i in range(1,N-2): 
-        for j in range(i,N-1):
-            before = dist[tour[i]][tour[i+1]] + dist[tour[j]][tour[j+1]]
-            after = dist[tour[i]][tour[j]] + dist[tour[i+1]][tour[j+1]]
-            if before > after:
-                x = tour[i+1]
-                tour[i+1] = tour[j]
-                tour[j] = x
+    while prev < all:
+        prev = calc(tour,dist)
+        for i in range(1,N-2): 
+            for j in range(i,N-1):
+                before = dist[tour[i]][tour[i+1]] + dist[tour[j]][tour[j+1]]
+                after = dist[tour[i]][tour[j]] + dist[tour[i+1]][tour[j+1]]
+
+                if before > after:
+                    x = tour[i+1]
+                    tour[i+1] = tour[j]
+                    tour[j] = x
+        all = calc(tour,dist)
 
     tour.append(0)
-    all = calc(tour,dist)
-    print(all)
+    answer = calc(tour,dist)
     return tour
 
 def calc(tour,dist): # tourを受け取り、全距離を求める
