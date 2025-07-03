@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import random
 import sys
 import math
 
@@ -37,72 +36,37 @@ def opt_2(tour,dist):
     N = len(tour)  #　N=都市の数
     count = 0
 
-    while count < 10000: # 10000回繰り返す
+    while count < 5000: # 5000回繰り返す
 
-        for i in range(1,N-4): # 0,N番目はstartなので変えない
+        for i in range(1,N-4): # 0番目は0なので変えない
+            for j in range(i+2,N-1): # N番目は0なので変えない
 
-                before = dist[tour[i]][tour[i+1]] + dist[tour[i+2]][tour[i+3]]
-                after = dist[tour[i]][tour[i+3]] + dist[tour[i+1]][tour[i+3]]
+                before = dist[tour[i]][tour[i+1]] + dist[tour[j]][tour[j+1]]
+                after = dist[tour[i]][tour[j]] + dist[tour[i+1]][tour[j+1]]
 
                 if before > after: # 変更後の距離が変更前より短かったら組み替える
 
                     x = tour[i+1] 
-                    tour[i+1] = tour[i+2]
-                    tour[i+2] = x
+                    tour[i+1] = tour[j]
+                    tour[j] = x
 
         count += 1
 
     tour.append(0)
+    answer = calc(tour,dist)
+    #print(answer)
     return tour
 
-# 焼きなまし法
-def yaki(tour,dist):
-    d = calc(tour,dist)
-    T = 100
-    while T > 0.0001: 
-        prev_tour = tour.copy()
-
-        # ランダムに点を選ぶ
-        i = random.randrange(1,len(tour)-1)
-        j = random.randrange(1,len(tour)-1)
-
-        if tour[i] == 0 or tour[j] == 0:
-            continue
-        else:  # 選んだ点と隣の点を交換する
-            x = tour[i]
-            tour[i] = tour[j]
-            tour[j] = x
-            new = calc(tour,dist)
-
-        # 新しいルートが古いルートよりよかったら新しいルートにする
-        if new < d:
-            d = new
-    
-        # 新しいルートが古いルートより悪かったら、20%の確率で新しいルートにし、80%の確率でそのまま
-        else:
-            y = random.randrange(1,11)
-            if y > 2:
-                continue
-            else:
-                d = new
-                tour[:] = prev_tour
-
-        T *= 0.995 
-    
-    return tour
-    
-
-def calc(tour,dist): # tourを受け取り、全距離を求める
+# 全距離を求める
+def calc(tour,dist):
     all_distance = 0
     for i in range(len(tour)-1):
         all_distance += dist[tour[i]][tour[i+1]]
     return all_distance
 
 def solve(cities):
-    t,dist = greedy(cities)
-    tour =  opt_2(t,dist)
-    return yaki(tour,dist)
-
+    tour,dist = greedy(cities)
+    return opt_2(tour,dist)
 
 if __name__ == '__main__':
     assert len(sys.argv) > 1
