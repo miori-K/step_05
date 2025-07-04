@@ -41,7 +41,7 @@ def opt_2(tour,dist):
         for i in range(1,N-3): # 0,N番目はstartなので変えない
             for j in range(i+2,N-1):
 
-                # Nで割ることで0に戻り、円になる
+                # Nで割ることで先頭に戻れる
                 before = dist[tour[i]][tour[(i+1)%N]] + dist[tour[j]][tour[(j+1)%N]]
                 after = dist[tour[i]][tour[j+1]] + dist[tour[(i+1)%N]][tour[(j)%N]]
 
