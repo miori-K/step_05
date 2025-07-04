@@ -17,18 +17,9 @@ def greedy(cities):
         for j in range(i, N):
             dist[i][j] = dist[j][i] = distance(cities[i], cities[j])
     # dist = [[AAの距離、ABの距離、ACの距離],[BAの距離、BBの距離、BCの距離],[CAの距離、CBの距離、CCの距離]]のようになる
-    
-    z_dist = sorted(dist[0])
-    for k in range(N):
-        if dist[0][k] == z_dist[0]:
-            start = k
-        elif dist[0][k] == z_dist[1]:
-            goal = k
 
-    current_city = start
+    current_city = 0
     unvisited_cities = set(range(1, N)) #　すべての都市をunvisitedにする
-    unvisited_cities.discard(start)
-    unvisited_cities.discard(goal)
     tour = [current_city] #　訪れた順番に記録
 
     while unvisited_cities: #　すべての都市に訪れるまで
@@ -37,7 +28,7 @@ def greedy(cities):
         unvisited_cities.remove(next_city)
         tour.append(next_city)
         current_city = next_city
-    
+
     return tour,dist
 
 # 2opt法
@@ -45,24 +36,24 @@ def opt_2(tour,dist):
     N = len(tour)  #　N=都市の数
     count = 0
 
-    while count < 10000: # 10000回繰り返す
+    while count < 10000: # 10回繰り返す
 
-        for i in range(1,N-4): # 0,N番目はstartなので変えない
+        for i in range(1,N-3): # 0,N番目はstartなので変えない
+            for j in range(i+2,N-1):
 
-                before = dist[tour[i]][tour[i+1]] + dist[tour[i+2]][tour[i+3]]
-                after = dist[tour[i]][tour[i+3]] + dist[tour[i+1]][tour[i+3]]
+                # Nで割ることで0に戻り、円になる
+                before = dist[tour[i]][tour[(i+1)%N]] + dist[tour[j]][tour[(j+1)%N]]
+                after = dist[tour[i]][tour[j+1]] + dist[tour[(i+1)%N]][tour[(j)%N]]
 
                 if before > after: # 変更後の距離が変更前より短かったら組み替える
 
-                    x = tour[i+1] 
-                    tour[i+1] = tour[i+2]
-                    tour[i+2] = x
+                    tour[i+1:j+1] = reversed(tour[i+1:j+1])
 
         count += 1
 
     tour.append(0)
     answer = calc(tour,dist)
-    #print(answer)
+    print(answer)
     return tour
 
 # 全距離を求める

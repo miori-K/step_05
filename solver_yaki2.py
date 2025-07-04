@@ -32,12 +32,12 @@ def greedy(cities):
 
     return tour,dist
 
-# 2opt法
+# 2opt法もどき
 def opt_2(tour,dist):
     N = len(tour)  #　N=都市の数
     count = 0
 
-    while count < 10000: # 10000回繰り返す
+    while count < 100: # 100回繰り返す
 
         for i in range(1,N-4): # 0,N番目はstartなので変えない
 
